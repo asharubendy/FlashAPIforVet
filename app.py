@@ -1,6 +1,6 @@
 import flask
 import json
-from flask import request, jsonify
+from flask import request, jsonify, Flask
 from mammals import *
 from birds import *
 
@@ -9,14 +9,16 @@ app = flask.Flask(__name__)
 
 
 def return_animal_list():
-    pep = Cat("pep", 10, "Black")
-    arsene = Dog("arsene", 7, "White")
-    bruce = Bat("bruce", 20, "Black")
-    tweetie = Pigeon("tweetie", 3, "Grey")
-    stewie = Penguin("stewie", 8, "White")
+    Pep = Cat("Pep", 10, "Black")
+    Arsene = Dog("Arsene", 7, "White")
+    Bruce = Bat("Bruce", 20, "Black")
+    Tweetie = Pigeon("Tweetie", 3, "Grey")
+    Stewie = Penguin("Stewie", 8, "White")
+    Tom = Cat("Tom", 9, "Ginger")
+    Spike = Dog("Spike", 15, "Brown")
+    Icy = Penguin("Icy", 6, "White")
 
-
-    animal_list = [pep, arsene, bruce, tweetie, stewie]
+    animal_list = [Pep, Arsene, Bruce, Tweetie, Stewie, Tom, Spike, Icy]
     return animal_list
 
 
@@ -24,15 +26,15 @@ app.config["DEBUG"] = True
 animals = return_animal_list()
 animals_JSON = []
 
-file = open("petowners.JSON")
+file = open("petowners.json")
 PetOwners = json.load(file)
 
 for i, animal in enumerate(animals):
     animals_JSON_iter = {
-        'id': i,
         'name': animal.name,
-        'age': animal.age,
+        'id': i,
         'colour': animal.colour,
+        'age': animal.age,
         
     }
     animals_JSON.append(animals_JSON_iter)
@@ -42,18 +44,22 @@ for i, animal in enumerate(animals):
 def home():
     return (
         "<h1>Welcome to our Vet!</h1>"
-        "<h2>We are here to help</h2>"
-    
+        "<h2>We are here to help!</h2>"
+        "<h3>We look after a range of animals.</h3>"
+        "<p>To browse the animals we currently have: <a href='/api/animals')>CLICK HERE</a>"
+        
     )
 
 
 @app.route('/api/customers/', methods=['GET'])
-def api_all():
+def api_all(): 
+    petowners = []
     return jsonify(petowners)
 
 
 @app.route('/api/customers/<int:owner_id>', methods=['GET'])
 def return_owner(owner_id):
+    petowners = []
     if owner_id >= len(petowners):
         return "<h1>Try again</h1>"
 
@@ -66,15 +72,11 @@ def return_owner(owner_id):
     return jsonify(results)
 
 
-@app.route('/api/')
-def redirect():
-    return "<h1><a href='/api/animals')>Animals</a> <br><br> <a href='/api/customers')>Customers</a></h1>"
-
-
 @app.route('/api/animals/', methods=['GET'])
 def list_all_animals():
     return jsonify(animals_JSON)
 
 
+if __name__ == '__main__':
 
-app.run()
+    app.run()
