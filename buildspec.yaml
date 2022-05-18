@@ -1,10 +1,10 @@
 version: 0.2
 env:
   secrets-manager:
-    LOGIN: sonarcloud:sonartoken
-    HOST: sonarcloud:Host
-    Organization: sonarcloud:Organization
-    Project: sonarcloud:Project
+    LOGIN: sonarcloud:TOKEN
+    HOST: sonarcloud:HOST
+    Organization: sonarcloud:ORG
+    Project: sonarcloud:PROJ
 phases:
   install:
     commands:
@@ -15,12 +15,8 @@ phases:
       - echo getting sonarcloud cli
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
       - unzip ./sonar-scanner-cli-4.7.0.2747-linux.zip
-      - ls
-      - pwd
-      - echo $(pwd)/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
-      - if [ -d "$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/" ] ; then echo "exists on your filesystem." && export PATH=$PATH:$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/ ;else echo "filepath doesn't exsist" ;fi
       - echo adding sonarcloud to path
-      - export PATH=$PATH:./sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
+      - if [ -d "$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/" ] ; then echo "Sonarcloud directory exists on codebuild container, adding to path." && export PATH=$PATH:$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/ ;else echo "filepath doesn't exsist, can't find sonarcloud" ;fi
       - echo $PATH
       - echo setting up pipenv and installing packages
       - pipenv install
@@ -31,6 +27,7 @@ phases:
       - echo ========== Starting Pre-Build Phase ==========
       - echo running sonarcloud Static analysis
       - sonar-scanner \
+        -Dsonar.login=$LOGIN\
         -Dsonar.organization=$Organization \
         -Dsonar.projectKey=$Project \
         -Dsonar.sources=. \
