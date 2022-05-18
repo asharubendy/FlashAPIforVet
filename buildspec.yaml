@@ -16,7 +16,7 @@ phases:
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
       - unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
       - echo adding sonarcloud to path
-      - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/sonar-scanner
       - echo $PATH
       - echo setting up pipenv and installing packages
       - pipenv install
@@ -26,7 +26,11 @@ phases:
     commands:
       - echo ========== Starting Pre-Build Phase ==========
       - echo running sonarcloud Static analysis
-      - sonar-scanner
+      - sonar-scanner \
+        -Dsonar.organization=$Organization \
+        -Dsonar.projectKey=$Project \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=$HOST
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
       - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
