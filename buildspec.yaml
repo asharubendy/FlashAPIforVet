@@ -18,7 +18,7 @@ phases:
       - ls
       - pwd
       - echo adding sonarcloud to path
-      - export PATH=$PATH:sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
+      - export PATH=$PATH:./sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
       - echo $PATH
       - echo setting up pipenv and installing packages
       - pipenv install
