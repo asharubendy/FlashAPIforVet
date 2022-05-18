@@ -2,7 +2,7 @@ version: 0.2
 env:
   secrets-manager:
     LOGIN: sonarcloud:sonartoken
-    HOST: sonarcloud:HOST
+    HOST: sonarcloud:Host
     Organization: sonarcloud:Organization
     Project: sonarcloud:Project
 phases:
