@@ -1,21 +1,43 @@
 version: 0.2
-
+env:
+  secrets-manager:
+    LOGIN: prod/sonar:sonartoken
+    HOST: prod/sonar:HOST
+    Organization: prod/sonar:Organization
+    Project: prod/sonar:Project
 phases:
   install:
     commands:
       - echo ========== Starting Install Phase ==========
+      - echo updating ENV
+      - apt-get update
+      - apt-get install -y jq
+      - echo getting sonarcloud cli
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
+      - unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
+      - echo adding sonarcloud to path
+      - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
+      - echo setting up pipenv and installing packages
+      - pipenv install
     finally:
       - echo ========== Finished Install Phase ==========
   pre_build:
     commands:
       - echo ========== Starting Pre-Build Phase ==========
-      - echo Installing python packages
-      - pip install -r requirements.txt
+      - echo running sonarcloud Static analysis
+      - sonar-scanner \
+        -Dsonar.organization=asharubendy \
+        -Dsonar.projectKey=TSI-PYTHON-FLASK-API \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=https://sonarcloud.io
+
     finally:
       - echo ========== Finished Pre-Build Phase ==========
   build:
     commands:
       - echo ========== Starting Build Phase ==========
+      - echo running tests
+      - pipenv run pytest UnitTests.py
     finally:
       - echo ========== Finished Build Phase ==========
   post_build:
