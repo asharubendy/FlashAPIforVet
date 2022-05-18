@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     SonarStatus: 0
+
   secrets-manager:
     LOGIN: sonarcloud:TOKEN
     HOST: sonarcloud:HOST
@@ -26,20 +27,23 @@ phases:
       - echo ========== Finished Install Phase ==========
   pre_build:
     commands:
-      - echo ========== Starting Pre-Build Phase ==========
-      - echo running sonarcloud Static analysis
-      - echo x
-      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=$Project -Dsonar.sources=. -Dsonar.host.url=$HOST
+      - echo ========== Starting Pre-Build & Test Phase ==========
+      - echo running tests
+      - if [(pipenv run pytest UnitTests.py | grep -cim1 failed) = 1] then echo unit Tests failed. && exit 1 ;fi
+      - pipenv run coverage xml
+      - echo ----- Running SonarCloud Static Analysis -----
+      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=$Project -Dsonar.sources=. -Dsonar.host.url=$HOST -Dsonar.python.coverage.reportPaths=coverage.xml
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
-      - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ]; then echo Quality gate note met. && exit 1 ;fi
+      - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ]; then echo Quality gate not met. && exit 1 ;fi
+
     finally:
       - echo ========== Finished Pre-Build Phase ==========
   build:
     commands:
       - echo ========== Starting Build Phase ==========
-      - echo running tests
-      - if [(pipenv run pytest UnitTests.py | grep -cim1 failed) = 1] then echo unit Tests failed. && exit 1 ;fi
+      -
+      -
     finally:
       - echo ========== Finished Build Phase ==========
   post_build:
