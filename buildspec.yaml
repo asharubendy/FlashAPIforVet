@@ -26,8 +26,6 @@ phases:
       - echo ========== Finished Install Phase ==========
   pre_build:
     commands:
-      - echo ========== Starting Pre-Build & Test Phase ==========
-      - echo running tests
       - if [(pipenv run pytest UnitTests.py | grep -cim1 failed) = 1] then echo unit Tests failed. && exit 1 ;fi
       - pipenv run coverage xml
       - echo ----- Running SonarCloud Static Analysis -----
