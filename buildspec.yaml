@@ -40,8 +40,6 @@ phases:
   build:
     commands:
       - echo ========== Starting Build Phase ==========
-      -
-      -
     finally:
       - echo ========== Finished Build Phase ==========
   post_build:
