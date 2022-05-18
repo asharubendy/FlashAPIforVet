@@ -2,7 +2,6 @@ version: 0.2
 env:
   variables:
     SonarStatus: 0
-
   secrets-manager:
     LOGIN: sonarcloud:TOKEN
     HOST: sonarcloud:HOST
