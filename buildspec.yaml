@@ -1,5 +1,10 @@
 version: 0.2
 env:
+  secrets-manager:
+    LOGIN: sonarcloud/sonarcloud:sonartoken
+    HOST: sonarcloud/sonarcloud:HOST
+    Organization: sonarcloud/sonarcloud:Organization
+    Project: sonarcloud/sonarcloud:Project
 phases:
   install:
     commands:
@@ -21,10 +26,14 @@ phases:
       - echo ========== Starting Pre-Build Phase ==========
       - echo running sonarcloud Static analysis
       - sonar-scanner \
-        -Dsonar.organization=asharubendy \
-        -Dsonar.projectKey=TSI-PYTHON-FLASK-API \
+        -Dsonar.organization=$Organization \
+        -Dsonar.projectKey=$Project \
         -Dsonar.sources=. \
-        -Dsonar.host.url=https://sonarcloud.io
+        -Dsonar.host.url=$HOST
+      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
+      - cat result.json
+      - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
+
     finally:
       - echo ========== Finished Pre-Build Phase ==========
   build:
