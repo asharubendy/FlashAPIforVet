@@ -18,7 +18,7 @@ phases:
       - ls
       - pwd
       - echo $(pwd)/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
-      - if [ -d "$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner" ] ; then echo "exists on your filesystem." && export PATH=$PATH:$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner ;else echo "filepath doesn't exsist" ;fi
+      - if [ -d "$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/" ] ; then echo "exists on your filesystem." && export PATH=$PATH:$(pwd)/sonar-scanner-4.7.0.2747-linux/bin/ ;else echo "filepath doesn't exsist" ;fi
       - echo adding sonarcloud to path
       - export PATH=$PATH:./sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
       - echo $PATH
