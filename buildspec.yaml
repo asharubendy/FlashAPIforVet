@@ -27,7 +27,7 @@ phases:
       - echo ========== Starting Pre-Build Phase ==========
       - echo running sonarcloud Static analysis
       - echo x
-      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=TSI-PYTHON-FLASK-API -Dsonar.sources=. -Dsonar.host.url=$HOST
+      - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=$Project -Dsonar.sources=. -Dsonar.host.url=$HOST
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
       - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
