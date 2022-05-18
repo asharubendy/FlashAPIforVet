@@ -1,5 +1,6 @@
 import flask
 import json
+from pathlib import Path
 from flask import request, jsonify, Flask
 from mammals import *
 from birds import *
@@ -26,7 +27,7 @@ app.config["DEBUG"] = True
 animals = return_animal_list()
 animals_JSON = []
 
-file = open("petowners.json")
+file = open(Path('petowners.json'))
 PetOwners = json.load(file)
 
 for i, animal in enumerate(animals):

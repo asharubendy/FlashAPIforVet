@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Starting Install Phase
+    finally:
+      - exho Finished Install Phase
+  pre_build:
+    commands:
+      - echo Starting Pre-Build Phase
+    finally:
+      - exho Finished Pre-Build Phase
+  build:
+    commands:
+      - echo Starting Build Phase
+    finally:
+      - exho Finished Build Phase
+  post_build:
+    commands:
+      - echo Starting Post Build Phase
+    finally:
+      - exho Finished Post Build Phase
