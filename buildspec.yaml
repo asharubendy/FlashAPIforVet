@@ -1,10 +1,5 @@
 version: 0.2
 env:
-  secrets-manager:
-    LOGIN: prod/sonar:sonartoken
-    HOST: prod/sonar:HOST
-    Organization: prod/sonar:Organization
-    Project: prod/sonar:Project
 phases:
   install:
     commands:
@@ -30,7 +25,6 @@ phases:
         -Dsonar.projectKey=TSI-PYTHON-FLASK-API \
         -Dsonar.sources=. \
         -Dsonar.host.url=https://sonarcloud.io
-
     finally:
       - echo ========== Finished Pre-Build Phase ==========
   build:
