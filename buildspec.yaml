@@ -26,6 +26,7 @@ phases:
     commands:
       - echo ========== Starting Pre-Build Phase ==========
       - echo running sonarcloud Static analysis
+      - echo x
       - sonar-scanner \
         -Dsonar.login=$LOGIN\
         -Dsonar.organization=$Organization \
