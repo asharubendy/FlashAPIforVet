@@ -1,9 +1,8 @@
 import pytest
 
+def exampleTest(x):
+    return x + 5
 
-class TestClass:
-
-    def __init__(self):
-        self.Pytest = pytest
-        self.test = "test"
+def testexampleAssert():
+    assert exampleTest(5) == 10
 

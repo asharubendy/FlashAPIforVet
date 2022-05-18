@@ -1,5 +1,7 @@
 version: 0.2
 env:
+  variables:
+    SonarStatus: 0
   secrets-manager:
     LOGIN: sonarcloud:TOKEN
     HOST: sonarcloud:HOST
@@ -30,14 +32,15 @@ phases:
       - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=$Project -Dsonar.sources=. -Dsonar.host.url=$HOST
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
-      - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
+      - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $SonarStatus = 0 ; else $SonarStatus = 1 ;fi
     finally:
+      - if [$SonarStatus = 0]; then echo Quality gate note met. && exit 1
       - echo ========== Finished Pre-Build Phase ==========
   build:
     commands:
       - echo ========== Starting Build Phase ==========
       - echo running tests
-      - pipenv run pytest UnitTests.py
+      - if [(pipenv run pytest UnitTests.py | grep -cim1 failed) = 1]
     finally:
       - echo ========== Finished Build Phase ==========
   post_build:
