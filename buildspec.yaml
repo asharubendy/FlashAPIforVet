@@ -26,8 +26,9 @@ phases:
       - echo ========== Finished Install Phase ==========
   pre_build:
     commands:
-      - echo ========== Starting Pre-Build Phase ==========
+      - echo ========== Starting Tests and Pre-Build Phase ==========
       - if [ $(pipenv run pytest UnitTests.py | grep -cim1 failed) = 1 ] ;then echo unit Tests failed. && exit 1 ;fi
+      - pipenv run coverage report
       - pipenv run coverage xml
       - echo Running Sonarcloud Static analysis
       - sonar-scanner -Dsonar.login=$LOGIN -Dsonar.organization=$Organization -Dsonar.projectKey=$Project -Dsonar.sources=. -Dsonar.host.url=$HOST -Dsonar.python.coverage.reportPaths=coverage.xml
@@ -39,7 +40,6 @@ phases:
   build:
     commands:
       - echo ========== Starting Build Phase ==========
-      - echo running tests
     finally:
       - echo ========== Finished Build Phase ==========
   post_build:
